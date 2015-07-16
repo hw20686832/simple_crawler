@@ -9,7 +9,7 @@ from crawler.http import Request
 
 class GoogleplaySpider(Spider):
     name = 'googleplay'
-    start_urls = ['play.google.com', ]
+    start_urls = ['https://play.google.com/store/apps/', ]
 
     def __init__(self, *args, **kvargs):
         Spider.__init__(self, *args, **kvargs)
