@@ -14,15 +14,16 @@ class Dupefilter(object):
         kw = self.crawler.redis.connection_pool.connection_kwargs
         host = kw['host']
         port = kw['port']
-        self.filter = pyreBloom.pyreBloom("bloomfilter", 100000000, 0.001,
-                                          host=host, port=port)
+        db = kw['db']
+        self.bfilter = pyreBloom.pyreBloom("bf:%s" % spider_name, 100000000, 0.001,
+                                           host=host, port=port, db=db)
 
     def seen(self, req):
-        return req.url in self.filter
+        return req.url in self.bfilter
 
     def do_fingerprint(self, req):
         if req.method == "GET":
-            self.filter.add(req.url)
+            self.bfilter.add(req.url)
 
     def close(self):
-        pass
+        self.bfilter.delete()
