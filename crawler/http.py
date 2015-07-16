@@ -3,6 +3,7 @@ import re
 import json
 
 from lxml import html
+from crawler.exceptions import EmptyExtractException
 
 
 class Request(object):
@@ -63,7 +64,7 @@ class Extractor(object):
     def xpath(self, path):
         elist = ExtractList()
         for el in self.root.xpath(path):
-            if type(el) is html.HtmlElement:
+            if isinstance(el, html.HtmlElement):
                 data = html.tostring(el, encoding='unicode')
             else:
                 data = el
@@ -74,10 +75,17 @@ class Extractor(object):
 
     def fetch(self):
         return [html.tostring(self.root, encoding='unicode')
-                if type(self.root) is html.HtmlElement else self.root, ]
+                if isinstance(self.root, html.HtmlElement) else self.root, ]
+
+    def first(self):
+        fetch_rs = self.fetch()
+        if len(fetch_rs) > 0:
+            return fetch_rs[0]
+        else:
+            raise EmptyExtractException
 
     def re(self, regex):
-        s = html.tostring(self.root, encoding='unicode') if type(self.root) is html.HtmlElement else self.root
+        s = html.tostring(self.root, encoding='unicode') if isinstance(self.root, html.HtmlElement) else self.root
         return re.findall(regex, s)
 
 

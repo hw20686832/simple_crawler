@@ -9,8 +9,4 @@ REQUEST_LIMIT = 30
 
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
-REDIS_DB = 2
-
-MONGO_HOST = 'localhost'
-MONGO_PORT = 27017
-MONGO_DB = 'crawlapp'
+REDIS_DB = 0

@@ -5,14 +5,7 @@ import redis
 
 import settings
 from crawler.http import Request
-
-
-class TrafficLimit(Exception):
-    pass
-
-
-class Empty(Exception):
-    pass
+from crawler.exceptions import TrafficLimit, Empty
 
 
 class TrafficQueue(object):

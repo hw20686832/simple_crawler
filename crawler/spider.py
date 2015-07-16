@@ -99,7 +99,10 @@ class Spider(Greenlet):
             return self.parse(response)
 
     def _domain_allow(self, url):
-        return urlparse.urlparse(url).netloc in self.allowed_domains
+        if self.allowed_domains:
+            return urlparse.urlparse(url).netloc in self.allowed_domains
+        else:
+            return True
 
     def parse(self, response):
         urls = response.xpath("//a/@href").fetch()
@@ -109,7 +112,11 @@ class Spider(Greenlet):
             yield Request(url)
 
     def abs_url(self, response, url):
-        return urlparse.urljoin(response.url, url)
+        if isinstance(response, str):
+            prefix = response
+        else:
+            prefix = response.url
+        return urlparse.urljoin(prefix, url)
 
     def _run(self):
         self.fetch()
