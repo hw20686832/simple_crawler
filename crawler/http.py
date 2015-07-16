@@ -77,13 +77,6 @@ class Extractor(object):
         return [html.tostring(self.root, encoding='unicode')
                 if isinstance(self.root, html.HtmlElement) else self.root, ]
 
-    def first(self):
-        fetch_rs = self.fetch()
-        if len(fetch_rs) > 0:
-            return fetch_rs[0]
-        else:
-            raise EmptyExtractException
-
     def re(self, regex):
         s = html.tostring(self.root, encoding='unicode') if isinstance(self.root, html.HtmlElement) else self.root
         return re.findall(regex, s)
@@ -94,10 +87,14 @@ class ExtractList(list):
         return ExtractList(el.xpath(path) for el in self)
 
     def fetch(self):
-        return [el.fetch() for el in self]
+        return [el.fetch()[0] for el in self]
 
     def first(self):
         return self[0].fetch()
+
+    def iter(self):
+        for el in self:
+            yield el.fetch()[0]
 
     def re(self, regex):
         return [el.re(regex) for el in self]

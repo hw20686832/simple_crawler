@@ -16,7 +16,7 @@ class GoogleplaySpider(Spider):
         self.redis = redis.Redis(host='localhost', db=0)
 
     def parse(self, response):
-        urls = response.xpath("//a/@href").fetch()
+        urls = response.xpath("//a/@href").iter()
         for url in urls:
             match = re.search(".*/details\?id=(.*)$", url)
             if match and '&' not in url and '.' in url:
