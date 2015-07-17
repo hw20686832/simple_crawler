@@ -46,10 +46,11 @@ class Response(object):
         self.obj = kw.get("obj")
         self.meta = kw.get("meta", {})
         self.code = kw.get("code")
-        self.root = html.fromstring(self.content)
+        #self.root = html.fromstring(self.content)
 
     def xpath(self, path):
-        return Extractor(self.root).xpath(path)
+        root = html.fromstring(self.content)
+        return Extractor(root).xpath(path)
 
     def json_load(self):
         return json.loads(self.content)
@@ -74,12 +75,10 @@ class Extractor(object):
         return elist
 
     def fetch(self):
-        return [html.tostring(self.root, encoding='unicode')
-                if isinstance(self.root, html.HtmlElement) else self.root, ]
+        return html.tostring(self.root, encoding='unicode') if isinstance(self.root, html.HtmlElement) else self.root
 
     def re(self, regex):
-        s = html.tostring(self.root, encoding='unicode') if isinstance(self.root, html.HtmlElement) else self.root
-        return re.findall(regex, s)
+        return ''.join(re.findall(regex, self.fetch()))
 
 
 class ExtractList(list):
@@ -87,14 +86,17 @@ class ExtractList(list):
         return ExtractList(el.xpath(path) for el in self)
 
     def fetch(self):
-        return [el.fetch()[0] for el in self]
+        return [el.fetch() for el in self]
 
     def first(self):
-        return self[0].fetch()
+        if len(len) > 0:
+            return self[0].fetch()
+        else:
+            raise EmptyExtractException("No enough item can be extract.")
 
     def iter(self):
         for el in self:
-            yield el.fetch()[0]
+            yield el.fetch()
 
     def re(self, regex):
         return [el.re(regex) for el in self]
