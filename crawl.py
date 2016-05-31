@@ -102,7 +102,7 @@ class Crawler(object):
 def gen_spider(spider, domain):
     pm = SpiderManager()
     if spider in pm.get_list():
-        raise Exception(u"指定的Spider已经存在.")
+        raise Exception(u"Spider %s exists." % spider)
     default_filename = "spiders/%s.py" % spider
     with open("utils/spider.tpl") as t:
         content = t.read()
@@ -111,7 +111,7 @@ def gen_spider(spider, domain):
     with open(default_filename, "w") as f:
         f.write(content)
 
-    print u"Spider已经创建在 %s" % default_filename
+    print u"Spider %s has been create into %s." % (spider, default_filename)
 
 
 def list_spiders():

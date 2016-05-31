@@ -23,7 +23,7 @@ class GoogleplaySpider(Spider):
             if match and '&' not in url and '.' in url:
                 appid = match.group(1)
                 if not self.redis.hexists("app_record", appid):
-                    self.redis.rpush('appids', appid)
+                    self.redis.sadd('appids', appid)
 
             if not url.startswith('http'):
                 url = self.abs_url("https://play.google.com", url)

@@ -14,7 +14,7 @@ class Request(object):
         self.meta = kw.get("meta", {})
         self.callback = callback or 'parse'
         self.headers = kw.get("headers")
-        self.verify = kw.get("headers", True)
+        self.verify = kw.get("verify", True)
         self.kw = kw
 
     def to_json(self):

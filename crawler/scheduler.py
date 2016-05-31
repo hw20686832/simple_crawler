@@ -30,11 +30,14 @@ class Schedule(object):
                         try:
                             if request.meta.get('limit'):
                                 self.traffic.t_in(request)
-                            self.spider_queue.put(request)
                         except TrafficLimit:
                             next_req = self.schedule_queue.get()
                             self.schedule_queue.insert(request)
-                            self.spider_queue.put(next_req)
+                            request = next_req
+                        finally:
+                            self.spider_queue.put(request)
+                            # registry fingeprint for request url.
+                            self.crawler.fp.do_fingerprint(request)
 
                     n -= 1
                 self.log.info("schedule %d, spider %d" %
