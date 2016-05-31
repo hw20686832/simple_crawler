@@ -81,6 +81,9 @@ class Crawler(object):
             for url in set(self.spider_class.start_urls + self.addition_urls):
                 req = Request(url)
                 self.schedule_queue.put(req)
+        else:
+            self.log.info("Continue run crawler, schedule queue %d"
+                          % len(self.schedule_queue))
 
         for i in xrange(self.concurrent_num):
             spd = self.spider_class.from_crawler(self)
